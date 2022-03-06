@@ -65,3 +65,5 @@ fruits.sort()
 print(fruits)
 
 #create tuples 
+fruits1 = ('apple','banana', 'orange', 'mango')
+print(fruits1)
