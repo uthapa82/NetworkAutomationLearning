@@ -74,7 +74,7 @@ print(fruits1)
 Day-2 Python Refresher 
 03/07/2022
 '''
-print("\n****** Day 2***********")
+print("\n******** Day 2***********")
 
 # set is a collection which is unordere and unindexed. No duplicate members 
 
@@ -95,3 +95,54 @@ fruits_set.add('Apples')
 # fruits_set.clear()
 
 print(fruits_set)
+
+
+# A dictionary is a collection which is unordered changeable and indexed. No duplicates 
+
+# create dict 
+person = {
+    'first_name': 'John',
+    'last_name' : 'Smith',
+    'age' : '25'
+}
+
+#using construtor 
+# person2 = dict(first_name = 'Sara', last_name='Williams')
+
+# print(person2)
+#Get values 
+print(person['first_name'])
+print(person.get('last_name'))
+
+# add key/value 
+person['phone'] = '555-555-5555'
+
+#Get dict keys 
+print(person.keys())
+# print(person, type(person))
+
+#Get items 
+print(person.items())
+
+
+#copy dictionary 
+person2 = person.copy()
+person2['city'] = "Lawrenceville"
+
+#remove item 
+del(person['age'])
+person.pop('phone')
+
+#clear 
+person.clear()
+
+#get length 
+print(len(person2))
+
+#list of dict 
+people = [
+    {'name' : 'MArtha', 'age':30},
+    {'name' : 'kevin', 'age' : 25}
+]
+
+print(people[1]['name'])
