@@ -67,3 +67,31 @@ print(fruits)
 #create tuples 
 fruits1 = ('apple','banana', 'orange', 'mango')
 print(fruits1)
+
+# delete a tuples 
+# del fruits1
+'''
+Day-2 Python Refresher 
+03/07/2022
+'''
+print("\n****** Day 2***********")
+
+# set is a collection which is unordere and unindexed. No duplicate members 
+
+#create set 
+fruits_set = {'Apples', 'Oranges', 'Mango'}
+#check if in set 
+print('Apples' in fruits_set)
+
+#remove from set 
+fruits_set.remove('Mango')
+
+#add iten in set 
+fruits_set.add("Pear")
+print(fruits_set)
+
+fruits_set.add('Apples')
+#clear set 
+# fruits_set.clear()
+
+print(fruits_set)
