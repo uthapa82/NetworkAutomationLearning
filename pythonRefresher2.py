@@ -61,3 +61,10 @@ if y not in numbers:
     print(y not in numbers)
     
 #loop 
+people = ['John', 'Paul', 'Sara', 'Susan']
+
+#simple for loop 
+for person in people:
+    print(f"current person: {person}")
+
+#Break 1:01:45 -traversy media
