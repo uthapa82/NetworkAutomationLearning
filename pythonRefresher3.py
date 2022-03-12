@@ -6,6 +6,9 @@ from datetime import date
 import time 
 from time import time 
 
+#import custom modules 
+from validator import validate_email as v
+
 #today = datatime.date.today()
 today = date.today()
 print(today)
@@ -13,3 +16,9 @@ print(today)
 timestamp = time()
 print(timestamp)
 
+#custom modules 
+email = 'test@test.com'
+if v(email):
+    print("Email is valid")
+else:
+    print("Email is bad")
