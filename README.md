@@ -4,6 +4,8 @@ Python  Refresher and Learning for Network Automation.
 * Review python syntax => Acknowledgement "Traversy Media Python Crash Course 
 * learn network automation packages 
 * Try automation on GNS-3  
+* Python for Network Engineer by Kirk Byers 
+
 # Getting Started
 
 0. Foundation "Stuff"
