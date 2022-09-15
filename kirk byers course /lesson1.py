@@ -1,4 +1,5 @@
 #!usr/bin/env python
+
 ip_addr1 = "192.168.16.1"
 ip_addr2 = "10.10.1.1"
 ip_addr3 = "172.16.31.17"
@@ -31,9 +32,30 @@ def ip_addr():
 
     print("-" * 60)
     print()
+
+def arp_table():
+    mac_address = []
+    ip_address = []
     
+    mac_addr = [
+        "Internet  10.220.88.29           94   5254.abbe.5b7b  ARPA   FastEthernet4", 
+        "Internet  10.220.88.30            3   5254.ab71.e119  ARPA   FastEthernet4", 
+        "Internet  10.220.88.32          231   5254.abc7.26aa  ARPA   FastEthernet4"
+    ]
+
+    for address in mac_addr:
+        fields = address.split()
+        ip_addr = fields[1]
+        mac1 = fields[3]
+        
+        print("{:>20}{:>20}".format("IP ADDR", "MAC ADDRESS"))
+        print("{:>20} {:>20}".format("-" * 20, "-" * 20))
+        print("{:>20} {:>20}".format(str(ip_addr), str(mac1)))
+        print()
+        
 def main():
     ip_addr()
+    arp_table()
     
 if __name__ == "__main__":
     main()
