@@ -25,7 +25,7 @@ ip routing vrf management 0.0.0.0/0 10.210.0.1
 
 ### CISCO IOS-XE
 
-<font size='14'>
+<font size='18'>
 
 ```
 device # conf t 
