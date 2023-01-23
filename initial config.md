@@ -25,8 +25,6 @@ ip routing vrf management 0.0.0.0/0 10.210.0.1
 
 ### CISCO IOS-XE
 
-<font size='18'>
-
 ```
 device # conf t 
 device(config) # username admin secret *secret*
@@ -38,7 +36,55 @@ device(config) # line vty 0 4
 device(config) # login local 
 
 ```
-</font>
 
 ### Juniper 
+
+```
+FreeBSD/amd64(Amnesiac)(ttyu0)
+
+login: root
+
+root@:~# cli
+root> configure
+Entering configuration mode
+
+[edit]
+root# 
+set system host-name rt73gnelab14115AQ-P2
+set system root-authentication plain-text-password
+New password:
+Retype new password:
+
+set system login user admin uid 2000
+set system login user admin class super-user
+set system login user admin authentication plain-text-password
+New password: 
+
+
+set system services ssh root-login allow
+set system syslog user * any emergency
+set system syslog file messages any notice 
+
+set system syslog file messages authoriation info
+set system syslog file interactive-commands interactive-commands any
+
+
+set interfaces fxp0 unit 0 family inet address 10.210.1.244/20
+set routing-options static route 0.0.0.0/0 next-hop 10.210.0.1
+
+# commit
+
+command to check the display of the configs 
+
+root@hostname# show | display set 
+
+Can only ping when in User EXEC mode 
+
+show configuration system login | display set 
+
+# banner motd # Bannner ,...\n#
+# show chassi hardware 
+#delete <statement> <id>
+
+```
 
