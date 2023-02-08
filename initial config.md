@@ -155,5 +155,68 @@ R1(config)#
 
 ```
 
+### Cisco IOS-XR
+
+```
+hostname <hostname>
+
+telnet vrf default ipv4 server max-servers 10
+
+username admin
+
+group root-lr
+
+group cisco-support 
+
+secret <password>
+
+interface MgmtEth0/RP0/CPU0/0
+
+ipv4 address 10.210.1.85 255.255.240.0
+
+no shut 
+
+router static address-family ipv4 unicast 0.0.0.0/0 10.210.0.1
+
+```
+
+### Cisco (ASR) IOS-XR 
+
+```
+hostname <hostname>
+
+#admin 
+
+# config 
+#username admin 
+group root-system 
+group cisco-support 
+secret 0 <secret>
+
+interface MgmtEth0/RP0/CPU0/0
+ipv4 address 10.210.1.85 255.255.240.0 
+no shut 
+
+router statci address-family ipv4 unicast 0.0.0.0/0 10.210.0.1
+
+ssh server v2
+
+```
+
+### Bypass Ixia 
+
+```
+IXIA Config:
+
+IBPDUO[admin@IXIA](config)# system hostname <hostname>
+
+IBPDUO[admin@IXIA](config)# user admin password <password>
+
+IBPDUO[admin@IXIA](config)# device interface eth0 address 10.210.1.94 netmask 255.255.240.0 gateway 10.210.0.1
+
+IBPDUO[admin@IXIA](config-device-interface-eth0)# description <121/1/4> 
+
+```
+
 
 
