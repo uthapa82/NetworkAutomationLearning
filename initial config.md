@@ -88,3 +88,72 @@ show configuration system login | display set
 
 ```
 
+
+### Cumulus
+
+```
+
+net add interface eth0 ip address <id addr>/24
+
+net add interface eth0 ip gatewat 10.210.0.1
+
+net pending 
+
+net commit
+
+net add hostname
+
+net pending
+
+net commit 
+
+ssh-key gen 
+
+net show interface all 
+
+```
+
+### Cisco NS-OS
+
+```
+
+config t 
+
+hostname {{hostname}}
+
+interface mgmt0
+
+vrf member management 
+
+ip address {{mgmt-ip}}
+
+vrf context management 
+
+ip route 0.0.0.0/0 10.210.0.1
+
+Not Required SSH and telnet 
+
+```
+
+### Cisco IOS 
+
+```
+
+R1(config)# vrf definition Mgmt-intf 
+
+R1(config-vrf)# address-family ipv4
+
+R1(config-vrf-af)# ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 10.210.0.1 
+
+R1(config)# int gi0/0
+
+R1(config-if)# vrf forwarding Mgmt-intf
+
+R1(config-if)# ip address 10.210.1.5 255.255.240.0
+
+R1(config)# 
+
+```
+
+
+
