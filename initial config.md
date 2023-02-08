@@ -82,7 +82,11 @@ Can only ping when in User EXEC mode
 
 show configuration system login | display set 
 
-# banner motd # Bannner ,...\n#
+# set system login message  # Bannner ,...\n#
+
+# set system login announcement  # Bannner ,...\n#
+
+
 # show chassi hardware 
 #delete <statement> <id>
 
