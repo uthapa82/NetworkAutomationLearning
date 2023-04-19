@@ -29,11 +29,17 @@ ip routing vrf management 0.0.0.0/0 10.210.0.1
 device # conf t 
 device(config) # username admin secret *secret*
 device(config) # hostname {{hostname}}
+device(config) # vrf definition name
 device(config) # ip route vrf Mgmt-intf 0.0.0.0 0.0.0.0 10.210.0.1
 device(config) # ip domain-name gnetest.com
 device(config) # crypto key generate rsa 
 device(config) # line vty 0 4 
 device(config) # login local 
+device(config) # int gig0/0/0 
+! interface management is connected to 
+device(config) # vrf forwarding name 
+device(config) # ip address address mask 
+
 
 ```
 
