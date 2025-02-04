@@ -1,0 +1,4 @@
+[servers]
+server1 ansible_python_interpreter=/usr/bin/python3
+server2 ansible_python_interpreter=/usr/bin/python3
+server3 ansible_python_interpreter=/usr/bin/python3
