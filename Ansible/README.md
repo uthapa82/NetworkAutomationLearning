@@ -49,12 +49,6 @@ ansible --version
 ansible all --key-file ~/.ssh/ansible -i inventory  -m ping 
 ```
 
-## MISC Commands
-
-- `ssh-keygen -t ed25119 -C "comment" `
-
-- `ssh-copy-id -i ~/.ssh/ssh-comment.pub <ip to send>`
-
 - create ansible.cfg set the defaults 
 ```bash
 [defaults]
@@ -105,6 +99,11 @@ $ apt search <package_name>
 #run .yml file 
 $ ansible-playbook --ask-become-pass <filename.yml> 
 
-# 
+PLAY RECAP *******************************************************************
+host-ip  : ok=2 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
+- changed => it did changed something 
+- unreachable => if there's problem reaching server
+- skipped => if the requirement is already there then skip 
+
 
 
