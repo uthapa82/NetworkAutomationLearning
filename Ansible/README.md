@@ -99,11 +99,24 @@ $ apt search <package_name>
 #run .yml file 
 $ ansible-playbook --ask-become-pass <filename.yml> 
 
+#test webpage via terminal, just the header information 
+$ curl -I https://example.com
+Example: curl -I server1 
+
+#get the full content of the page 
+$ curl server1
+
+#alternative is to use wget
+$ wget server1
+
 PLAY RECAP *******************************************************************
 host-ip  : ok=2 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 - changed => it did changed something 
-- unreachable => if there's problem reaching server
+- unreachable => there's problem reaching server
 - skipped => if the requirement is already there then skip 
+- rescued => if a playbook failed and we try to rerun again with the fix
+
+
 
 
 
