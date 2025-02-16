@@ -1,16 +1,26 @@
 ---
 - hosts: all
   become: true
+  vars:
+    apache_package = httpd php_package = libapache2-mod-php
+
   tasks:
       #play 1
     - name: Update repository index
       ansible.builtin.apt:
         update_cache: yes
+      when: ansible_distribution in ["Ubuntu", "Debian"]
 
-    - name: Install apache2 package
+    - name: Install apache2 & php packages
       ansible.builtin.apt:
-        name: apache2
+        # generic OS package manager, installs based on the underlying OS package manager 
+        package:
+          - "{{ apache_package }}"
+          - "{{ php_package }}"
+        state: latest
+      when: ansible_distribution == "CentOS"
 
     - name: Add php support for apache
       ansible.builtin.apt:
         name: libapache2-mod-php
+      when: ansible_distribution == "CentOS"
