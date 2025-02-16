@@ -13,7 +13,7 @@
 
     - name: Install apache2 & php packages
       ansible.builtin.apt:
-        # generic OS package manager, installs based on the underlying OS package manager 
+        # generic OS package manager, installs based on the underlying OS package manager
         package:
           - "{{ apache_package }}"
           - "{{ php_package }}"
