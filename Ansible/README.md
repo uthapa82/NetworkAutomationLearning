@@ -109,6 +109,20 @@ $ curl server1
 #alternative is to use wget
 $ wget server1
 
+# get the distribution information 
+$ ansible all -m gather_facts --limit server1 | grep ansible_distribution 
+
+# firewall rule to allow http port 
+$ sudo firewall-cmd --app-port=80/tcp
+
+#list the tags 
+$ ansible-playbook --list-tags file.yml 
+
+# using tag to run only specific tags 
+$ ansible-playbook --tags <tag-name> --ask-become-pass file.yml 
+
+$ ansible-playbook --tags "tag-1,tag-2" --ask-become-pass file.yml
+
 PLAY RECAP *******************************************************************
 host-ip  : ok=2 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 - changed => it did changed something 
@@ -116,7 +130,7 @@ host-ip  : ok=2 changed=1 unreachable=0 failed=0 skipped=0 rescued=0 ignored=0
 - skipped => if the requirement is already there then skip 
 - rescued => if a playbook failed and we try to rerun again with the fix
 
-
+```
 
 
 

@@ -1,0 +1,19 @@
+---
+
+- hosts: server1
+  become: true
+  # pre_tasks: when we need to run certain task first
+  pre_tasks:
+  - name: Install Updates (Ubuntu)
+    tags: Always
+    apt:
+      upgrade: dist
+    when: ansible_distribution == "Ubuntu"
+
+  - name : Install updates (CentOS)
+    tags: CentOS
+    dnf:
+      update_only: yes
+      update_cache: yes
+      state: latest
+    when: ansible_distribution == "CentOS"
