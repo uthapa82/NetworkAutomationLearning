@@ -76,3 +76,28 @@
       name: httpd
       state: restarted
     when: httpd.chaged
+
+    # user management play
+- hosts: server3
+  become: true
+  tasks:
+
+  - name: Create simone user
+    tags: add-user
+    user:
+      name: simone
+      groups: root
+
+  - name: Add ssh ssh key for simone
+    tags: ssh-key
+    authorized_key:
+      user: simone
+      key: "ssh key from host"
+
+  - name: Add sudoers file for simone
+    copy:
+      src: sudoer_simone
+      dest: /etc/sudoers.d/simone
+      owner: root
+      group: root
+      
