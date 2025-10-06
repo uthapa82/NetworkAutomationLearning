@@ -1,0 +1,103 @@
+---
+
+- hosts: server1
+  become: true
+  # pre_tasks: when we need to run certain task first
+  pre_tasks:
+  - name: Install Updates (Ubuntu)
+    tags: Always
+    apt:
+      upgrade: dist
+    when: ansible_distribution == "Ubuntu"
+
+  - name : Install updates (CentOS)
+    tags: CentOS
+    dnf:
+      update_only: yes
+      update_cache: yes
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+  - name: copy default html file for site
+    tags: apache
+    copy:
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+
+- hosts: server2
+  become: true
+  tasks:
+
+  - name: Install unzip
+    tags: teraform
+    package:
+      name: unzip
+
+  - name: Install terraform
+    tags: terraform
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/0.12.28/terraform_0.12.28_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+
+  - name: Uninstall terraform
+    tags: remove-terraform
+    file:
+      path: /usr/local/bin/terraform
+      state: absent
+
+  # start services
+  - name: Start httpd (Ubuntu)
+    tags: service-start
+    service:
+      name: apache2
+      state: started
+    when: ansible_distribution == "Ubuntu"
+
+  # change email inside config file
+  - name: Change name in email file
+    tags: email-change
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line: ServerAdmin johndoe@gmail.com
+    when: ansible_distribution == ""CentOS"
+    register: httpd
+
+  - name: restart httpd (CentOS)
+    tags: apache, centos, httpd
+    service:
+      name: httpd
+      state: restarted
+    when: httpd.chaged
+
+    # user management play
+- hosts: server3
+  become: true
+  tasks:
+
+  - name: Create simone user
+    tags: add-user
+    user:
+      name: simone
+      groups: root
+
+  - name: Add ssh ssh key for simone
+    tags: ssh-key
+    authorized_key:
+      user: simone
+      key: "ssh key from host"
+
+  - name: Add sudoers file for simone
+    copy:
+      src: sudoer_simone
+      dest: /etc/sudoers.d/simone
+      owner: root
+      group: root
+      
