@@ -31,7 +31,7 @@ Python  Refresher and Learning for Network Automation.
     * "Profile" before change, Change, "Profile" after, DIFF
 
 Other Skills/Questions
-1. How to schedule "stuff"
+1. How to schedule tasks
   * Run a Python script every hour - cron utility on Linux/Unix/macOS
   * Orchestration/Integration Tools - (CICD Tools) - Jenkins, Drone, Gitlab
     * "Event Driven"
@@ -44,3 +44,7 @@ Other Skills/Questions
 * Transactions/Error Recovery
 
 # Ansible File Structure, agentless, modules and API leverage 
+
+# EVE-NG 
+* Automated topology creation: dynamically create EVE-NG labs with any number of nodes 
+* Configuration deployment: script to apply configuration files to each node efficiently.
