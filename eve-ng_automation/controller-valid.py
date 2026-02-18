@@ -62,18 +62,25 @@ def update_passwords(file_path, current_pw, new_pw):
             print(f"Waiting for {hostname} to process the change...")
             time.sleep(10)
 
-            # Wait for either a shell prompt or EOF after the password change
-            # Timeout bumped to 15 to give extra breathing room on top of the sleep
-            child.expect([r'[\$#]\s*$', pexpect.EOF], timeout=15)
+            # On many network devices the session closes right after a password change
+            # So both a shell prompt AND EOF are treated as success
+            index = child.expect([r'[\$#]\s*$', pexpect.EOF], timeout=15)
 
-            print(f"Success: Password updated for {hostname}")
+            if index == 0:
+                print(f"Success: Password updated for {hostname} (shell prompt received)")
+            elif index == 1:
+                print(f"Success: Password updated for {hostname} (session closed after change, this is normal)")
 
         except pexpect.TIMEOUT:
             print(f"Error: Timed out on {hostname}. It might not have prompted for a password change.")
             if child is not None:
                 print(f"Last output seen: {child.before.strip()}")
+                print(f"All output: {child.before}")
         except pexpect.EOF:
-            print(f"Error: Connection closed unexpectedly on {hostname}. Check if the IP is reachable.")
+            print(f"Error: Connection closed unexpectedly on {hostname}.")
+            if child is not None:
+                print(f"Last output seen: {child.before.strip()}")
+                print(f"All output: {child.before}")
         except Exception as e:
             print(f"Error on {hostname}: {str(e)}")
 
