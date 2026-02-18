@@ -29,12 +29,18 @@ def update_passwords(file_path, current_pw, new_pw):
         child = None
         try:
             # 2. Spawn the SSH session using Windows built-in OpenSSH explicitly
-            # StrictHostKeyChecking=no and UserKnownHostsFile=NUL together ensure
-            # the host key popup never appears, even on first connection
+            # -tt forces a pseudo-terminal so the device presents password change prompts
+            # Legacy MACs, Ciphers, Kex, and HostKey algorithms are included to support
+            # older network devices that don't support modern OpenSSH defaults
             command = [
                 r'C:\Windows\System32\OpenSSH\ssh.exe',
+                '-tt',
                 '-o', 'StrictHostKeyChecking=no',
                 '-o', 'UserKnownHostsFile=NUL',
+                '-o', 'MACs=hmac-sha1,hmac-sha2-256,hmac-sha2-512,hmac-md5,hmac-sha1-96,hmac-md5-96',
+                '-o', 'KexAlgorithms=diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1,diffie-hellman-group-exchange-sha256',
+                '-o', 'HostKeyAlgorithms=ssh-rsa,ssh-dss',
+                '-o', 'Ciphers=aes128-cbc,aes192-cbc,aes256-cbc,3des-cbc,aes128-ctr,aes192-ctr,aes256-ctr',
                 f'root@{ip}'
             ]
 
