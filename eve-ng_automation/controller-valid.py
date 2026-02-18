@@ -8,7 +8,6 @@ def update_passwords(file_path, current_pw, new_pw):
     # 1. Read and parse the text file
     try:
         with open(file_path, 'r') as file:
-            # Filters out empty lines
             lines = [line.strip() for line in file if line.strip()]
     except FileNotFoundError:
         print(f"Error: Could not find the file '{file_path}'. Please check the name.")
@@ -16,7 +15,6 @@ def update_passwords(file_path, current_pw, new_pw):
 
     for line in lines:
         try:
-            # Parse the format: HOSTNAME.domain.com;ipv6address
             hostname, ip = line.split(';')
             hostname = hostname.strip()
             ip = ip.strip()
@@ -28,8 +26,6 @@ def update_passwords(file_path, current_pw, new_pw):
 
         try:
             # 2. Define the device connection parameters
-            # device_type 'linux' works for most Unix/Linux based network devices
-            # If your device is a Cisco, Juniper, etc. change device_type accordingly
             device = {
                 'device_type': 'linux',
                 'host': ip,
@@ -37,16 +33,13 @@ def update_passwords(file_path, current_pw, new_pw):
                 'password': current_pw,
                 'timeout': 30,
                 'session_timeout': 60,
-                # These allow Netmiko to handle expired password prompts
-                'handling_password_change': True,
-                'secret': current_pw,
             }
 
             # 3. Connect to the device
             print(f"Connecting to {hostname}...")
             connection = ConnectHandler(**device)
 
-            # 4. Send the passwd command and handle the prompts
+            # 4. Send passwd command and handle prompts one by one
             print(f"Sending password change command to {hostname}...")
 
             # Send passwd command and wait for current password prompt
@@ -56,46 +49,49 @@ def update_passwords(file_path, current_pw, new_pw):
                 strip_command=False,
                 read_timeout=10
             )
+            print(f"[DEBUG] After passwd command: {output.strip()}")
 
             # Handle current password prompt
             if 'current' in output.lower() or 'password' in output.lower():
-                output += connection.send_command_timing(
+                output = connection.send_command_timing(
                     current_pw,
                     strip_prompt=False,
                     strip_command=False,
                     read_timeout=10
                 )
+                print(f"[DEBUG] After current password: {output.strip()}")
 
             # Handle new password prompt
             if 'new' in output.lower() or 'password' in output.lower():
-                output += connection.send_command_timing(
+                output = connection.send_command_timing(
                     new_pw,
                     strip_prompt=False,
                     strip_command=False,
                     read_timeout=10
                 )
+                print(f"[DEBUG] After new password: {output.strip()}")
 
             # Handle retype/confirm password prompt
             if 'retype' in output.lower() or 'confirm' in output.lower() or 'new' in output.lower():
-                output += connection.send_command_timing(
+                output = connection.send_command_timing(
                     new_pw,
                     strip_prompt=False,
                     strip_command=False,
                     read_timeout=10
                 )
+                print(f"[DEBUG] After retype password: {output.strip()}")
 
             # Wait for device to process
             print(f"Waiting for {hostname} to process the change...")
             time.sleep(10)
 
-            # Check the output for success or failure indicators
+            # Check output for success or failure
             if any(word in output.lower() for word in ['successfully', 'updated', 'changed']):
                 print(f"Success: Password updated for {hostname}")
             elif any(word in output.lower() for word in ['failure', 'error', 'failed', 'denied']):
                 print(f"Error: Password change may have failed for {hostname}")
                 print(f"Device output: {output.strip()}")
             else:
-                # If no clear success/failure message, assume success and show output
                 print(f"Success: Password change command sent to {hostname}")
                 print(f"Device output: {output.strip()}")
 
@@ -111,12 +107,10 @@ def update_passwords(file_path, current_pw, new_pw):
 
 
 if __name__ == '__main__':
-    # File containing your devices
     FILE_PATH = "hosts.txt"
 
     print("=== Secure Bulk Password Update ===")
 
-    # Securely prompt for the passwords (characters will be hidden as you type)
     current_password = getpass.getpass("Enter Current (Expired) Password: ")
     new_password = getpass.getpass("Enter New Password: ")
     confirm_password = getpass.getpass("Retype New Password to confirm: ")
@@ -125,7 +119,6 @@ if __name__ == '__main__':
         print("\nError: The new passwords you typed do not match. Exiting script.")
         sys.exit(1)
 
-    # Show device count before proceeding as a safety check
     try:
         with open(FILE_PATH, 'r') as f:
             device_count = sum(1 for line in f if line.strip())
