@@ -5,7 +5,6 @@ from netmiko import ConnectHandler
 from netmiko.exceptions import NetmikoTimeoutException, NetmikoAuthenticationException
 
 def update_passwords(file_path, current_pw, new_pw):
-    # 1. Read and parse the text file
     try:
         with open(file_path, 'r') as file:
             lines = [line.strip() for line in file if line.strip()]
@@ -25,7 +24,6 @@ def update_passwords(file_path, current_pw, new_pw):
         print(f"\n--- Processing {hostname} ({ip}) ---")
 
         try:
-            # 2. Define the device connection parameters
             device = {
                 'device_type': 'linux',
                 'host': ip,
@@ -35,34 +33,32 @@ def update_passwords(file_path, current_pw, new_pw):
                 'session_timeout': 60,
             }
 
-            # 3. Connect to the device
             print(f"Connecting to {hostname}...")
             connection = ConnectHandler(**device)
 
-            # 4. Send passwd command and handle prompts one by one
             print(f"Sending password change command to {hostname}...")
 
-            # Send passwd command and wait for current password prompt
+            # Send passwd command and wait for "(current) UNIX password:" prompt
             output = connection.send_command_timing(
                 'passwd',
                 strip_prompt=False,
                 strip_command=False,
                 read_timeout=10
             )
-            print(f"[DEBUG] After passwd command: {output.strip()}")
+            print(f"[DEBUG] After passwd: {output.strip()}")
 
-            # Handle current password prompt
-            if 'current' in output.lower() or 'password' in output.lower():
+            # Matches exactly: "(current) UNIX password:"
+            if 'current' in output.lower():
                 output = connection.send_command_timing(
                     current_pw,
                     strip_prompt=False,
                     strip_command=False,
                     read_timeout=10
                 )
-                print(f"[DEBUG] After current password: {output.strip()}")
+                print(f"[DEBUG] After current UNIX password: {output.strip()}")
 
-            # Handle new password prompt
-            if 'new' in output.lower() or 'password' in output.lower():
+            # Matches exactly: "New password:"
+            if 'new password' in output.lower():
                 output = connection.send_command_timing(
                     new_pw,
                     strip_prompt=False,
@@ -71,31 +67,31 @@ def update_passwords(file_path, current_pw, new_pw):
                 )
                 print(f"[DEBUG] After new password: {output.strip()}")
 
-            # Handle retype/confirm password prompt
-            if 'retype' in output.lower() or 'confirm' in output.lower() or 'new' in output.lower():
+            # Matches exactly: "Retype new password:"
+            if 'retype' in output.lower():
                 output = connection.send_command_timing(
                     new_pw,
                     strip_prompt=False,
                     strip_command=False,
                     read_timeout=10
                 )
-                print(f"[DEBUG] After retype password: {output.strip()}")
+                print(f"[DEBUG] After retype new password: {output.strip()}")
 
-            # Wait for device to process
+            # Wait for device to process the change
             print(f"Waiting for {hostname} to process the change...")
             time.sleep(10)
 
-            # Check output for success or failure
+            # Check final output for success or failure
             if any(word in output.lower() for word in ['successfully', 'updated', 'changed']):
                 print(f"Success: Password updated for {hostname}")
-            elif any(word in output.lower() for word in ['failure', 'error', 'failed', 'denied']):
-                print(f"Error: Password change may have failed for {hostname}")
+            elif any(word in output.lower() for word in ['failure', 'error', 'failed', 'denied', 'mistake']):
+                print(f"Error: Password change failed for {hostname}")
                 print(f"Device output: {output.strip()}")
             else:
+                # Device likely closed session after change which is normal
                 print(f"Success: Password change command sent to {hostname}")
                 print(f"Device output: {output.strip()}")
 
-            # 5. Disconnect cleanly
             connection.disconnect()
 
         except NetmikoTimeoutException:
@@ -134,3 +130,4 @@ if __name__ == '__main__':
 
     print("\nStarting automated updates...")
     update_passwords(FILE_PATH, current_password, new_password)
+    
