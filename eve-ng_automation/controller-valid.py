@@ -1,5 +1,6 @@
 import sys
 import getpass
+import time
 import pexpect
 from pexpect.popen_spawn import PopenSpawn
 
@@ -27,10 +28,15 @@ def update_passwords(file_path, current_pw, new_pw):
 
         child = None
         try:
-            # 2. Spawn the SSH session using built-in Windows OpenSSH
-            # -o StrictHostKeyChecking=no automatically clicks "yes" to accept new host keys
-            # Command is passed as a list for correct behavior on Windows
-            command = ['ssh', '-o', 'StrictHostKeyChecking=no', f'root@{ip}']
+            # 2. Spawn the SSH session using Windows built-in OpenSSH explicitly
+            # StrictHostKeyChecking=no and UserKnownHostsFile=NUL together ensure
+            # the host key popup never appears, even on first connection
+            command = [
+                r'C:\Windows\System32\OpenSSH\ssh.exe',
+                '-o', 'StrictHostKeyChecking=no',
+                '-o', 'UserKnownHostsFile=NUL',
+                f'root@{ip}'
+            ]
 
             # PopenSpawn is required for Windows. encoding='utf-8' allows us to match standard text.
             child = PopenSpawn(command, encoding='utf-8', timeout=15)
@@ -52,15 +58,18 @@ def update_passwords(file_path, current_pw, new_pw):
             child.expect('(?i)retype.*password:')
             child.sendline(new_pw)
 
+            # Wait 10 seconds for the device to process the password change
+            print(f"Waiting for {hostname} to process the change...")
+            time.sleep(10)
+
             # Wait for either a shell prompt or EOF after the password change
-            # Using a regex pattern to safely match shell prompts like $ or #
-            child.expect([r'[\$#]\s*$', pexpect.EOF], timeout=10)
+            # Timeout bumped to 15 to give extra breathing room on top of the sleep
+            child.expect([r'[\$#]\s*$', pexpect.EOF], timeout=15)
 
             print(f"Success: Password updated for {hostname}")
 
         except pexpect.TIMEOUT:
             print(f"Error: Timed out on {hostname}. It might not have prompted for a password change.")
-            # Guard against child being None if PopenSpawn itself failed
             if child is not None:
                 print(f"Last output seen: {child.before.strip()}")
         except pexpect.EOF:
