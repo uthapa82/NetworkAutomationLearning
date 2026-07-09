@@ -1,3 +1,30 @@
 {
-    "ansible.python.interpreterPath": "/bin/python3"
+  "files.associations": {
+    "*.yml": "ansible",
+    "*.yaml": "ansible"
+  },
+
+  "ansible.python.interpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "ansible.validation.lint.enabled": true,
+  "ansible.validation.lint.path": "ansible-lint", //"${workspaceFolder}/.venv/bin/ansible-lint",
+
+  "editor.renderWhitespace": "all",
+
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "editor.renderFinalNewline": "on",
+
+  "[ansible]": {
+    "editor.defaultFormatter": "redhat.ansible",
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
+  }
 }
