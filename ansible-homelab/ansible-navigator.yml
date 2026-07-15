@@ -1,0 +1,17 @@
+---
+ansible-navigator:
+  execution-environment:
+    container-engine: podman
+    enabled: true
+    image: ghcr.io/uthapa82/homelab-ee:1.0
+    pull:
+      policy: missing
+  logging:
+    level: debug
+    append: false
+    file: $PWD/.logs/ansible-navigator.log
+
+  playbook-artifact:
+    enable: true
+    save-as: "$PWD/.logs/{playbook_name}-artifact-{time_stamp}.json"
+  mode: stdout

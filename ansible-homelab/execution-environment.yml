@@ -1,0 +1,19 @@
+---
+version: 3 # tells ansible-builder which schema to interpret rest of the file
+
+images:
+  base_image:
+    name: docker.io/redhat/ubi9:9.4
+
+dependencies:
+  ansible_core:
+    package_pip: ansible_core
+  ansible_runner:
+    package_pip: ansible_runner
+  galaxy: requirements.yml
+  python: requirements.txt
+  system: bindep.txt
+
+additional_build_steps:
+  append_final:
+    - RUN echo "Custom homelab EE built $(date)" > /etc/ee-build-info
