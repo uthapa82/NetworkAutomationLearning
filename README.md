@@ -48,3 +48,24 @@ Other Skills/Questions
 # EVE-NG 
 * Automated topology creation: dynamically create EVE-NG labs with any number of nodes 
 * Configuration deployment: script to apply configuration files to each node efficiently.
+
+# git scrub, remove the commit for deleted files 
+
+  ```bash
+  install git-repo-filter 
+  
+  # find the files removed 
+  git show --name-status 
+
+  # run the command , --force if needed 
+  git filter-repo \
+  --path "path/to/sensitive_file1.py" \
+  --path "path/to/sensitive_file2.sh" \
+  --invert-paths 
+
+  # add origin back
+  git remote add origin <repo>
+
+  # push, -f if required 
+  git push -u origin main
+  ```
